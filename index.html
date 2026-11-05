@@ -2,12 +2,27 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="refresh" content="0;url=https://8d0b0b0e6b1b7e.lhr.life">
 <title>CSDesk · 跳转中…</title>
-<style>body{font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#faf8f4;color:#333}a{color:#b07d3c}}</style>
+<style>body{font-family:system-ui,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#faf8f4;color:#333}p{text-align:center;line-height:2}a{color:#b07d3c}.err{color:#c00}</style>
 </head>
 <body>
-<p>正在跳转到 CSDesk 工作台…<br>如未自动跳转，<a href="https://8d0b0b0e6b1b7e.lhr.life">点这里</a></p>
-<script>location.replace("https://8d0b0b0e6b1b7e.lhr.life");</script>
+<p id="msg">正在获取最新工作台地址…<br><span style="font-size:12px;color:#999">如长时间未跳转，请刷新重试</span></p>
+<script>
+(async function(){
+  const msg = document.getElementById('msg');
+  try {
+    // 通过 GitHub API 实时获取最新隧道地址（绕过 Pages 部署延迟）
+    const r = await fetch('https://api.github.com/repos/sbj520/csdesk-redirect/contents/tunnel-url.txt?t=' + Date.now());
+    if (!r.ok) throw new Error('API ' + r.status);
+    const j = await r.json();
+    const url = atob(j.content.replace(/\n/g,'')).trim();
+    if (!url || !url.startsWith('https://')) throw new Error('地址格式异常');
+    msg.innerHTML = '正在跳转到工作台…<br><a href="' + url + '">如未自动跳转，点这里</a>';
+    location.replace(url);
+  } catch(e) {
+    msg.innerHTML = '<span class="err">获取地址失败：' + e.message + '</span><br>请稍后刷新重试，或联系管理员';
+  }
+})();
+</script>
 </body>
 </html>
