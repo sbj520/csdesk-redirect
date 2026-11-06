@@ -16,7 +16,7 @@
     if (!r.ok) throw new Error('API ' + r.status);
     const j = await r.json();
     const url = atob(j.content.replace(/\n/g,'')).trim();
-    if (!url || !url.startsWith('https://')) throw new Error('地址格式异常');
+    if (!url || !(url.startsWith('https://') || url.startsWith('http://'))) throw new Error('地址格式异常');
     msg.innerHTML = '正在跳转到工作台…<br><a href="' + url + '">如未自动跳转，点这里</a>';
     location.replace(url);
   } catch(e) {
